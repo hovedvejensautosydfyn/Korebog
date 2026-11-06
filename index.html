@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kørebog</title>
+<meta name="description" content="Kørebog til Hovedvejens Auto Sydfyn">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kørebog">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Skrifttypen hentes uden at blokere visningen; indtil den er hentet (eller uden net) bruges systemets skrift. -->
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet"></noscript>
+<script src="config.js"></script>
+<style>
+  :root {
+    --bg: #0E0E10;
+    --surface: #18181B;
+    --surface-2: #222226;
+    --line: #2A2A2F;
+    --line-strong: #3A3A40;
+    --ink: #F4F4F5;
+    --muted: #A1A1AA;
+    --brand: #FE1C19;
+    --accent: #FF5C59;
+    --accent-hover: #FF7A77;
+    --accent-fill: #E3120F;
+    --accent-fill-hover: #F2231F;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #3A1514;
+    --ok: #4ADE80;
+    --ok-soft: #10301C;
+    --danger: #FB7185;
+    --danger-soft: #3B1220;
+    --warn-ink: #F5C463;
+    --warn-soft: #33270C;
+    --focus: #FF5C59;
+    --bar: #000000;
+    --bar-ink: #FFFFFF;
+    --bar-muted: #A1A1AA;
+    --bar-line: #1F1F23;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --f-body: "Ubuntu", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --f-disp: "Teko", "Bahnschrift", "Arial Narrow", sans-serif;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.5 var(--f-body);
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+  button, input { font: inherit; color: inherit; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+
+  .top {
+    background: var(--bar); color: var(--bar-ink);
+    padding: calc(12px + env(safe-area-inset-top, 0px)) max(24px, calc((100% - 1080px) / 2 + 24px)) 12px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand svg { display: none; }
+  .brand .logo { height: 28px; width: auto; display: block; flex: none; }
+  .brand-name {
+    font-family: var(--f-disp); font-weight: 500; font-size: 21px; line-height: 1; letter-spacing: .07em; text-transform: uppercase;
+    padding-left: 12px; border-left: 1px solid var(--bar-line); color: var(--bar-ink); padding-top: 3px;
+  }
+  .top-actions { display: flex; gap: 6px; align-items: center; }
+
+  .ghost {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 7px 12px; border-radius: 999px; border: 1px solid transparent;
+    background: none; color: var(--muted); text-decoration: none; cursor: pointer; font-size: 14px;
+  }
+  .ghost:hover { color: var(--ink); background: var(--surface-2); }
+  .top .ghost { color: var(--bar-muted); }
+  .top .ghost:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+
+  .layout {
+    max-width: 1080px; margin: 0 auto; padding: 20px 24px 48px;
+    display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start;
+  }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .form-card { padding: 26px 26px 24px; }
+  aside { display: grid; gap: 20px; }
+
+  h1 {
+    font-family: var(--f-disp); font-size: 34px; line-height: 1; letter-spacing: .02em; text-transform: uppercase;
+    margin: 0 0 24px; font-weight: 600;
+  }
+  h1::after { content: ""; display: block; width: 38px; height: 3px; border-radius: 2px; background: var(--brand); margin-top: 6px; }
+  h2 { font-size: 15px; margin: 0; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+
+  .banner {
+    display: flex; gap: 12px; align-items: center; justify-content: space-between;
+    padding: 11px 14px; border-radius: var(--radius-sm); background: var(--accent-soft); margin: -4px 0 18px; font-size: 14px;
+  }
+  .banner.error { background: var(--danger-soft); color: var(--danger); }
+  .banner button { flex: none; }
+
+  .seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface-2); border: 1px solid var(--line); border-radius: 11px; padding: 4px; gap: 4px; }
+  .seg button {
+    border: 0; background: none; padding: 9px 10px; min-height: 40px; border-radius: 8px; cursor: pointer; color: var(--muted); font-weight: 500;
+  }
+  .seg button:hover { color: var(--ink); }
+  .seg button[aria-checked="true"] { background: var(--line-strong); color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, .4); }
+  .hint { color: var(--muted); font-size: 13.5px; margin: 8px 2px 20px; min-height: 2.6em; }
+
+  .field { margin-bottom: 16px; }
+  .field > label, .label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+  .req { font-weight: 400; }
+  input[type="text"], input[type="date"], input[type="search"], input:not([type]) {
+    width: 100%; padding: 11px 13px; border-radius: var(--radius-sm);
+    border: 1px solid var(--line-strong); background: var(--surface); outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px var(--accent-soft); }
+  input::placeholder { color: color-mix(in srgb, var(--muted) 80%, transparent); }
+  input[aria-invalid="true"] { border-color: var(--danger); }
+
+  .date-row { display: flex; gap: 8px; align-items: center; }
+  .date-row input { max-width: 190px; }
+
+  .chip {
+    border: 1px solid var(--line-strong); background: var(--surface-2); border-radius: 999px;
+    padding: 5px 12px; font-size: 13px; cursor: pointer; color: var(--ink); white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
+  .chips:empty { display: none; }
+
+  .route { position: relative; padding-left: 26px; }
+  .route::before {
+    content: ""; position: absolute; left: 7px; top: 37px; bottom: 37px; width: 2px;
+    background: repeating-linear-gradient(to bottom, var(--brand) 0 5px, transparent 5px 10px);
+  }
+  .route .field { position: relative; }
+  .route .field::before {
+    content: ""; position: absolute; left: -24px; top: 38px; width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid var(--brand); background: var(--surface);
+  }
+  .route .field.end::before { background: var(--brand); }
+  .route .field.stop::before { width: 8px; height: 8px; left: -23px; top: 39px; border-color: var(--muted); }
+  .route-tools { display: flex; justify-content: space-between; align-items: center; margin: -6px 0 12px; }
+  .stop-row { display: flex; gap: 6px; }
+  .icon-btn {
+    flex: none; width: 40px; height: 42px; display: grid; place-items: center; border-radius: var(--radius-sm);
+    border: 1px solid transparent; background: none; color: var(--muted); cursor: pointer;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+  .link-btn { border: 0; background: none; color: var(--accent); cursor: pointer; padding: 4px 0; font-size: 14px; font-weight: 500; }
+  .link-btn:hover { text-decoration: underline; color: var(--accent-hover); }
+
+  .check { display: flex; gap: 12px; align-items: flex-start; padding: 13px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 16px; }
+  .check:hover { border-color: var(--line-strong); }
+  .check input { position: absolute; opacity: 0; pointer-events: none; }
+  .check .box {
+    flex: none; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--line-strong);
+    display: grid; place-items: center; margin-top: 1px; transition: background .15s, border-color .15s;
+  }
+  .check .box svg { opacity: 0; color: var(--accent-ink); }
+  .check input:checked + .box { background: var(--accent-fill); border-color: var(--accent-fill); }
+  .check input:checked + .box svg { opacity: 1; }
+  .check input:focus-visible + .box { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .check small { display: block; color: var(--muted); font-size: 13px; }
+
+  details.note { margin: -4px 0 16px; }
+  details.note summary { cursor: pointer; color: var(--accent); font-size: 14px; font-weight: 500; list-style: none; }
+  details.note summary::-webkit-details-marker { display: none; }
+  details.note[open] summary { margin-bottom: 8px; }
+
+  .result { border-radius: var(--radius-sm); background: var(--surface-2); border: 1px solid var(--line); padding: 16px 18px; margin-bottom: 18px; min-height: 76px; }
+  .result-idle { color: var(--muted); font-size: 14px; display: flex; align-items: center; min-height: 44px; }
+  .result-loading { display: flex; gap: 10px; align-items: center; color: var(--muted); min-height: 44px; }
+  .spinner { width: 16px; height: 16px; border: 2px solid var(--line-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .result-error { color: var(--danger); font-size: 14px; }
+  .km-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .km-big { font-family: var(--f-disp); font-size: 46px; font-weight: 600; letter-spacing: .01em; line-height: 1; }
+  .km-big small { font-family: var(--f-body); font-size: 17px; font-weight: 500; color: var(--muted); margin-left: 4px; letter-spacing: 0; }
+  .km-split { color: var(--muted); font-size: 14px; }
+  .resolved { margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); display: grid; gap: 2px; }
+  .resolved b { color: var(--ink); font-weight: 500; }
+  .result-actions { display: flex; gap: 16px; align-items: center; margin-top: 12px; flex-wrap: wrap; font-size: 14px; }
+  .result-actions a { text-decoration: none; font-weight: 500; }
+  .result-actions a:hover { text-decoration: underline; color: var(--accent-hover); }
+  .km-edit { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+  .km-edit input { width: 120px; }
+  .km-edit span { color: var(--muted); font-size: 14px; }
+  .tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--warn-soft); color: var(--warn-ink); }
+
+  .primary {
+    width: 100%; border: 0; border-radius: var(--radius-sm); padding: 13px 16px; min-height: 44px;
+    font-weight: 700; font-size: 13.5px; letter-spacing: .09em; text-transform: uppercase;
+    background: var(--accent-fill); color: var(--accent-ink); cursor: pointer; transition: background .15s, opacity .15s;
+  }
+  .primary:hover:not(:disabled) { background: var(--accent-fill-hover); }
+  .primary:disabled { opacity: .45; cursor: not-allowed; }
+  .form-error { color: var(--danger); font-size: 14px; margin: -6px 0 12px; }
+  .save-hint { color: var(--muted); font-size: 13px; text-align: center; margin: 8px 0 0; min-height: 1.5em; }
+  .bridge { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; color: var(--muted); }
+  .bridge select {
+    font: inherit; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line-strong);
+    border-radius: 8px; padding: 5px 8px;
+  }
+  .choice { display: grid; gap: 8px; margin-bottom: 16px; }
+  .choice .check { margin-bottom: 0; }
+  .check .radio { border-radius: 50%; }
+  .check input:checked + .radio { background: var(--surface); border: 6px solid var(--accent-fill); }
+
+  .stats { padding: 22px 22px 18px; }
+  .eyebrow { margin: 0; font-size: 13px; color: var(--muted); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .big { margin: 2px 0 16px; font-family: var(--f-disp); font-size: 56px; font-weight: 600; letter-spacing: .01em; line-height: 1.05; }
+  .big small { font-family: var(--f-body); font-size: 18px; color: var(--muted); font-weight: 500; margin-left: 4px; letter-spacing: 0; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; margin: 0; }
+  .stat-grid div { background: var(--surface-2); padding: 11px 13px; }
+  .stat-grid dt { font-size: 12.5px; color: var(--muted); }
+  .stat-grid dd { margin: 2px 0 0; font-family: var(--f-disp); font-weight: 600; font-size: 22px; line-height: 1.2; letter-spacing: .01em; }
+  .fine { font-size: 12.5px; color: var(--muted); margin: 10px 0 0; }
+  .years { margin: 16px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+  .years li { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .years li span:last-child { font-weight: 500; }
+
+  .recent { padding: 18px 8px 8px; }
+  .recent-head { display: flex; justify-content: space-between; align-items: center; padding: 0 14px 8px; }
+  .recent ol { list-style: none; margin: 0; padding: 0; }
+  .trip { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 11px 14px; border-radius: 10px; }
+  .trip:hover { background: var(--surface-2); }
+  .trip-route { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .trip-km { font-weight: 700; font-size: 14px; text-align: right; }
+  .trip-meta { font-size: 12.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .trip-actions { display: flex; gap: 2px; justify-content: flex-end; opacity: .0; transition: opacity .15s; }
+  .trip:hover .trip-actions, .trip:focus-within .trip-actions { opacity: 1; }
+  .trip-actions button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 12.5px; padding: 2px 6px; border-radius: 6px; }
+  .trip-actions button:hover { color: var(--ink); background: var(--line); }
+  .trip-actions button.confirm { color: var(--danger); font-weight: 700; }
+  .badge { display: inline-block; font-size: 11.5px; padding: 0 7px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-right: 6px; font-weight: 500; }
+  .badge.business { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line-strong); }
+  .empty { color: var(--muted); font-size: 14px; padding: 6px 14px 14px; margin: 0; }
+
+  dialog {
+    border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 0; width: min(480px, calc(100vw - 32px));
+    background: var(--surface); color: var(--ink); box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+  }
+  dialog::backdrop { background: rgba(0, 0, 0, .7); }
+  dialog form { padding: 24px; }
+  dialog h2 { font-size: 15px; margin-bottom: 4px; }
+  dialog .sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .dialog-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+  .secondary {
+    border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); border-radius: var(--radius-sm); padding: 10px 16px; min-height: 44px; cursor: pointer;
+    font-weight: 700; font-size: 13.5px; letter-spacing: .09em; text-transform: uppercase;
+  }
+  .secondary:hover { background: var(--surface-2); }
+  .dialog-actions .primary { width: auto; padding: 10px 18px; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    background: var(--bar); color: var(--bar-ink); padding: 11px 12px 11px 16px; border-radius: 12px;
+    border-left: 3px solid var(--brand); outline: 1px solid var(--bar-line);
+    display: flex; gap: 14px; align-items: center; font-size: 14px; box-shadow: 0 10px 30px rgba(0, 0, 0, .6);
+    transition: opacity .2s, transform .2s; max-width: calc(100vw - 32px);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .toast button { border: 0; background: none; color: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; padding: 2px 4px; }
+
+  .skeleton { color: var(--muted); }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .top { padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px; gap: 8px; }
+    .top-actions .label-text { display: none; }
+    .top .ghost { min-height: 40px; min-width: 40px; justify-content: center; }
+    .layout { padding: 16px 16px 40px; gap: 16px; }
+    .form-card { padding: 20px 16px; }
+    .date-row input { max-width: none; flex: 1; min-width: 0; }
+    .trip-route { white-space: normal; }
+  }
+  @media (hover: none), (max-width: 520px) {
+    .trip-actions { opacity: 1; }
+    .trip-actions button { min-height: 36px; padding: 6px 10px; font-size: 13.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation-duration: 0s !important; } }
+  /* Review-rettelser: tydeligere kanter på felter og afkrydsningsbokse (3:1), større trykflader i topbjælken */
+  input[type="text"]:not(:focus):not([aria-invalid="true"]), input[type="search"]:not(:focus):not([aria-invalid="true"]), input[type="number"]:not(:focus):not([aria-invalid="true"]), input[type="date"]:not(:focus):not([aria-invalid="true"]), input[type="tel"]:not(:focus):not([aria-invalid="true"]), input:not([type]):not(:focus):not([aria-invalid="true"]), select:not(:focus), textarea:not(:focus) { border-color: #6B6B74; }
+  .box, .check .box { border-color: #6B6B74; }
+  .top .ghost { min-height: 44px; min-width: 44px; justify-content: center; }
+
+  /* App-udgaven: kodeskærm, enhed og bund på iPhone */
+  body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .pair { max-width: 440px; margin: 0 auto; padding: 32px 20px 48px; }
+  .pair .card { padding: 26px 24px 24px; }
+  .pair p { color: var(--muted); font-size: 14.5px; margin: 0 0 18px; }
+  .pair ol { color: var(--muted); font-size: 14px; margin: 0 0 20px; padding-left: 20px; }
+  .pair ol li { margin-bottom: 4px; }
+  .code-input {
+    font-family: var(--f-disp); font-size: 34px !important; letter-spacing: .18em; text-align: center;
+    padding: 10px 12px !important; font-variant-numeric: tabular-nums;
+  }
+  .pair .primary { margin-top: 4px; }
+  .device-info { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; margin: 0 0 18px; font-size: 14px; }
+  .device-info strong { display: block; font-size: 15px; color: var(--ink); }
+  .device-info span { color: var(--muted); }
+  .code-box { text-align: center; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; margin: 0 0 14px; }
+  .code-box .code { font-family: var(--f-disp); font-size: 46px; line-height: 1.05; letter-spacing: .14em; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .code-box .muted { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+  .link-danger { background: none; border: 0; color: var(--danger); font: inherit; font-size: 14px; padding: 8px 0; cursor: pointer; text-decoration: underline; }
+  .stack-actions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; margin-top: 4px; }
+  .stack-actions .secondary { width: 100%; }
+  .toast { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <img class="logo" alt="Hovedvejens Auto Sydfyn" src="data:image/png;base64,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">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="6" cy="18" r="2.6" stroke="currentColor" stroke-width="2"/>
+      <circle cx="18" cy="6" r="2.6" fill="currentColor"/>
+      <path d="M8.5 16.5c3-1 2-5 5-6.5 1.2-.6 2-1 2.6-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 3"/>
+    </svg>
+    <span class="brand-name">Kørebog</span>
+  </div>
+  <div class="top-actions">
+    <a class="ghost" id="sheetLink" href="#" target="_blank" rel="noopener" aria-label="Regneark" hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+      <span class="label-text">Regneark</span>
+    </a>
+    <button class="ghost" id="settingsBtn" type="button" aria-label="Indstillinger">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+      <span class="label-text">Indstillinger</span>
+    </button>
+    <button class="ghost" id="deviceBtn" type="button" aria-label="Enhed" hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>
+      <span class="label-text">Enhed</span>
+    </button>
+  </div>
+</header>
+
+<section class="pair" id="pairView" aria-labelledby="pairTitle" hidden>
+  <div class="card">
+    <h1 id="pairTitle">Velkommen</h1>
+    <p>Kørebogen er kun for Hovedvejens Auto og Oliver. Indtast en kode for at bruge den på denne enhed. Det skal kun gøres én gang.</p>
+    <ol>
+      <li>Åbn regnearket <strong>Kørebog</strong>, og vælg <strong>Kørebog → Ny enhed …</strong></li>
+      <li>Eller tryk <strong>Enhed → Tilføj enhed</strong> i Kørebog-appen på en anden enhed.</li>
+    </ol>
+    <form id="pairForm" novalidate>
+      <div class="field">
+        <label for="pairCode">Kode (8 cifre)</label>
+        <input id="pairCode" class="code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="11" placeholder="0000 0000" aria-describedby="pairError" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="pairName">Navn på enheden</label>
+        <input id="pairName" type="text" maxlength="40" autocomplete="off" placeholder="fx Olivers iPhone">
+      </div>
+      <p class="form-error" id="pairError" role="alert" hidden></p>
+      <button class="primary" type="submit" id="pairBtn">Fortsæt</button>
+    </form>
+  </div>
+</section>
+
+<main class="layout" id="appView" hidden>
+  <section class="card form-card" aria-labelledby="newTripTitle">
+    <h1 id="newTripTitle">Ny tur</h1>
+
+    <div class="banner error" id="loadError" role="alert" hidden></div>
+    <div class="banner error" id="problemBanner" role="alert" hidden></div>
+    <div class="banner" id="setupBanner" hidden>
+      <span>Tilføj din adresse og arbejdsplads, så kan du udfylde ruten med ét klik.</span>
+      <button class="chip" type="button" data-open-settings>Indstillinger</button>
+    </div>
+
+    <div class="seg" role="radiogroup" aria-label="Type af kørsel">
+      <button type="button" role="radio" data-type="Hjem–arbejde" aria-checked="true">Hjem–arbejde</button>
+      <button type="button" role="radio" data-type="Erhverv" aria-checked="false">Erhverv</button>
+    </div>
+    <p class="hint" id="typeHint"></p>
+
+    <div class="field">
+      <label for="date">Dato</label>
+      <div class="date-row">
+        <input type="date" id="date" required>
+        <button class="chip" type="button" data-day-offset="0">I dag</button>
+        <button class="chip" type="button" data-day-offset="-1">I går</button>
+      </div>
+    </div>
+
+    <div class="route">
+      <div class="field">
+        <label for="from">Fra</label>
+        <input type="text" id="from" list="addressList" autocomplete="off" placeholder="Adresse, postnummer og by">
+        <div class="chips" data-chips-for="from"></div>
+      </div>
+      <div id="stops"></div>
+      <div class="route-tools">
+        <button class="link-btn" type="button" id="addStop">+ Tilføj delmål</button>
+        <button class="icon-btn" type="button" id="swapBtn" title="Byt om på fra og til" aria-label="Byt om på fra og til">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M7 4 3.5 7.5M7 4l3.5 3.5M17 20V4m0 16-3.5-3.5M17 20l3.5-3.5"/></svg>
+        </button>
+      </div>
+      <div class="field end">
+        <label for="to">Til</label>
+        <input type="text" id="to" list="addressList" autocomplete="off" placeholder="Adresse, postnummer og by">
+        <div class="chips" data-chips-for="to"></div>
+      </div>
+    </div>
+
+    <label class="check">
+      <input type="checkbox" id="roundTrip">
+      <span class="box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+      <span><strong>Returtur</strong><small>Kør tilbage til startadressen samme dag. Afstanden hjem beregnes også.</small></span>
+    </label>
+
+    <div class="field">
+      <label for="purpose">Formål <span class="req" id="purposeReq"></span></label>
+      <input type="text" id="purpose" list="purposeList" autocomplete="off">
+    </div>
+
+    <details class="note" id="noteBox">
+      <summary>+ Tilføj note</summary>
+      <input type="text" id="note" autocomplete="off" placeholder="fx kilometertæller eller hvem du besøgte" aria-label="Note">
+    </details>
+
+    <div class="result" id="result" aria-live="polite"></div>
+    <p class="form-error" id="formError" role="alert" hidden></p>
+    <button class="primary" type="button" id="saveBtn" disabled aria-describedby="saveHint">Gem tur</button>
+    <p class="save-hint" id="saveHint" aria-live="polite"></p>
+  </section>
+
+  <aside>
+    <section class="card stats" aria-labelledby="statsTitle">
+      <p class="eyebrow" id="statsTitle">Kørt i <span id="statYear"></span></p>
+      <p class="big"><span id="statKm">–</span><small>km</small></p>
+      <dl class="stat-grid">
+        <div><dt id="statMonthLabel">Denne måned</dt><dd><span id="statMonthKm">–</span> km</dd></div>
+        <div><dt>Ture i år</dt><dd id="statTrips">–</dd></div>
+        <div><dt>Kørselsfradrag</dt><dd id="statCommute">–</dd></div>
+        <div><dt id="statBusinessLabel">Erhverv</dt><dd id="statBusiness">–</dd></div>
+      </dl>
+      <p class="fine" id="statFine">Beløbene er vejledende og beregnet efter Skattestyrelsens satser.</p>
+      <ul class="years" id="yearList" aria-label="Km pr. kalenderår"></ul>
+    </section>
+
+    <section class="card recent" aria-labelledby="recentTitle">
+      <div class="recent-head"><h2 id="recentTitle">Seneste ture</h2></div>
+      <ol id="recentList"><li class="empty skeleton">Henter kørebog …</li></ol>
+    </section>
+  </aside>
+</main>
+
+<datalist id="addressList"></datalist>
+<datalist id="purposeList"></datalist>
+
+<dialog id="settingsDialog" aria-labelledby="settingsTitle">
+  <form id="settingsForm" method="dialog">
+    <h2 id="settingsTitle">Indstillinger</h2>
+    <p class="sub">Bruges som genveje i formularen og står øverst i dit kørselsregnskab.</p>
+    <div class="field"><label for="setName">Navn</label><input type="text" id="setName" autocomplete="name"></div>
+    <div class="field"><label for="setHome">Din adresse (folkeregisteradresse)</label><input type="text" id="setHome" autocomplete="street-address" placeholder="Vej og nr., postnummer og by"></div>
+    <div class="field"><label for="setWork">Fast arbejdsplads</label><input type="text" id="setWork" placeholder="Vej og nr., postnummer og by"></div>
+    <div class="field"><label for="setPlate">Bilens registreringsnummer</label><input type="text" id="setPlate" placeholder="fx AB 12 345"></div>
+    <fieldset class="choice" style="border:0;padding:0;margin:0 0 16px">
+      <legend class="label">Erhvervskørsel</legend>
+      <label class="check">
+        <input type="radio" name="compensation" value="Ingen godtgørelse">
+        <span class="box radio"></span>
+        <span><strong>Jeg får ingen kørselsgodtgørelse</strong><small>Erhvervskørslen lægges sammen med hjem–arbejde, og det hele giver kørselsfradrag.</small></span>
+      </label>
+      <label class="check">
+        <input type="radio" name="compensation" value="Kørselsgodtgørelse fra arbejdsgiver">
+        <span class="box radio"></span>
+        <span><strong>Min arbejdsgiver betaler kørselsgodtgørelse</strong><small>Oversigten viser, hvad der højst kan udbetales skattefrit.</small></span>
+      </label>
+      <label class="check">
+        <input type="radio" name="compensation" value="Selvstændig">
+        <span class="box radio"></span>
+        <span><strong>Jeg er selvstændig</strong><small>Erhvervskørslen fradrages i virksomheden efter statens satser.</small></span>
+      </label>
+    </fieldset>
+    <label class="check">
+      <input type="checkbox" id="setRemote">
+      <span class="box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+      <span><strong>Jeg bor i en yderkommune eller på en småø</strong><small>Giver en højere sats for kørselsfradrag. Se listen på skat.dk.</small></span>
+    </label>
+    <p class="form-error" id="settingsError" role="alert" hidden></p>
+    <div class="dialog-actions">
+      <button class="secondary" type="button" id="settingsCancel">Annullér</button>
+      <button class="primary" type="submit" id="settingsSave">Gem</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="deviceDialog" aria-labelledby="deviceTitle">
+  <form method="dialog" id="deviceForm">
+    <h2 id="deviceTitle">Enhed</h2>
+    <p class="sub">Hver telefon og pc har sin egen adgang til Kørebogen.</p>
+    <div class="device-info"><strong id="deviceName"></strong><span id="devicePerson"></span></div>
+    <div id="codeOut" hidden>
+      <div class="code-box"><div class="code" id="codeValue"></div><div class="muted" id="codeExpires"></div></div>
+      <p class="sub">Åbn Kørebog-appen på den nye enhed, og indtast koden. Den kan kun bruges én gang.</p>
+    </div>
+    <p class="form-error" id="deviceError" role="alert" hidden></p>
+    <div class="stack-actions">
+      <button class="secondary" type="button" id="newCodeBtn">Tilføj enhed</button>
+      <button class="link-danger" type="button" id="logoutBtn">Log ud på denne enhed</button>
+    </div>
+    <div class="dialog-actions">
+      <button class="secondary" type="submit" value="close">Luk</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button type="button" id="toastAction" hidden>Fortryd</button></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var TYPE_COMMUTE = 'Hjem–arbejde';
+  var TYPE_BUSINESS = 'Erhverv';
+  var HINTS = {};
+  HINTS[TYPE_COMMUTE] = 'Kørsel mellem din adresse og din faste arbejdsplads. Giver kørselsfradrag for de km, der ligger over 24 km pr. dag.';
+  HINTS[TYPE_BUSINESS] = 'Kørsel i arbejdets tjeneste, fx til kunder, kurser, mellem arbejdspladser eller til en midlertidig arbejdsplads. Formålet skal skrives.';
+  var COMP_NONE = 'Ingen godtgørelse';
+  var COMP_EMPLOYER = 'Kørselsgodtgørelse fra arbejdsgiver';
+  var BRIDGE_LABELS = { '': 'Ingen', 'Storebælt': 'Storebælt', 'Øresund': 'Øresund' };
+  var touchOnly = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
+  var todayFormat = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Copenhagen', year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  var kmFormat = new Intl.NumberFormat('da-DK', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  var krFormat = new Intl.NumberFormat('da-DK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  var dateFormat = new Intl.DateTimeFormat('da-DK', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  var $ = function (id) { return document.getElementById(id); };
+  var els = {
+    date: $('date'), from: $('from'), to: $('to'), stops: $('stops'), roundTrip: $('roundTrip'),
+    purpose: $('purpose'), purposeReq: $('purposeReq'), note: $('note'), noteBox: $('noteBox'),
+    result: $('result'), saveBtn: $('saveBtn'), formError: $('formError'), typeHint: $('typeHint'),
+    recentList: $('recentList'), yearList: $('yearList'), toast: $('toast'), toastText: $('toastText'),
+    toastAction: $('toastAction'), dialog: $('settingsDialog')
+  };
+
+  var state = null;          // seneste tilstand fra serveren
+  var tripType = TYPE_COMMUTE;
+  var route = { status: 'idle' }; // idle | loading | ok | error
+  var routeSeq = 0;
+  var routeTimer = null;
+  var saving = false;
+  var lastAttempt = null;    // { signature, id } for den seneste tur, der blev forsøgt gemt
+  var dateTouchedOn = null;  // dagen, hvor brugeren selv valgte en anden dato (gælder kun den dag)
+  var bridge = '';           // valgt bro for turen
+  var bridgeTouched = false; // har brugeren selv valgt bro?
+
+  // ---------- Hjælpere ----------
+
+  // ---------- Serveren (Apps Script som API) ----------
+  // Appen ligger på samme adresse (BRUGERNAVN.github.io) som Procedurer-appen og deler derfor
+  // lager med den. Alt, Kørebogen gemmer, har navne, der starter med "korebog.".
+
+  var API_URL = String(window.KOREBOG_API_URL || '').trim();
+  var TIMEOUT_MS = window.KOREBOG_TIMEOUT_MS || 30000;   // et svar tager normalt 1-3 sekunder, men første kald kan tage længere
+  var SETUP_MESSAGE = 'Serveren er ikke sat op rigtigt. Se Fejlfinding i vejledningen (README): webappen skal være delt med "Alle", og adressen skal slutte på /exec.';
+
+  // localStorage kan mangle (fx privat fane). Så huskes værdierne, så længe siden er åben.
+  var memStore = {};
+  function store(key, value) {
+    var k = 'korebog.' + key;
+    try { localStorage.setItem(k, value); delete memStore[k]; } catch (e) { memStore[k] = String(value); }
+  }
+  function recall(key) {
+    var k = 'korebog.' + key;
+    if (Object.prototype.hasOwnProperty.call(memStore, k)) return memStore[k];
+    try { return localStorage.getItem(k); } catch (e) { return null; }
+  }
+  function forget(key) {
+    var k = 'korebog.' + key;
+    delete memStore[k];
+    try { localStorage.removeItem(k); } catch (e) { /* intet at slette */ }
+  }
+
+  var deviceKey = recall('key') || '';
+
+  function appError(message, code) {
+    var err = new Error(message);
+    err.code = code || '';
+    return err;
+  }
+
+  /** Ét kald til serveren. Afviser med en Error, hvor code er AUTH, INPUT, LIMIT, SERVER, NET eller SETUP. */
+  function call(name, arg) {
+    if (!API_URL) return Promise.reject(appError('Appen er ikke sat op endnu. Adressen til serveren mangler i filen config.js.', 'SETUP'));
+    var body = JSON.stringify({ fn: name, args: arg === undefined ? [] : [arg], key: name === 'pair' ? '' : deviceKey });
+    var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS) : 0;
+    // text/plain er en "simpel" forespørgsel: ingen forhåndsforespørgsel, som Apps Script ikke kan svare på.
+    return fetch(API_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body,
+      redirect: 'follow', cache: 'no-store', credentials: 'omit', signal: ctrl ? ctrl.signal : undefined
+    }).then(function (res) {
+      if (res.status === 401 || res.status === 403 || res.status === 404) throw appError(SETUP_MESSAGE, 'SETUP');
+      return res.text().then(function (text) { return { res: res, text: text }; });
+    }).then(function (got) {
+      clearTimeout(timer);
+      var json = null;
+      try { json = JSON.parse(got.text); } catch (e) { json = null; }
+      if (!json || typeof json.ok !== 'boolean') {
+        // Googles login-side: webappen er ikke delt med "Alle", eller adressen er ikke /exec.
+        if (/^\s*</.test(got.text) && /ServiceLogin|accounts\.google\.com\/(v3\/)?signin|AccountChooser/i.test(got.text)) throw appError(SETUP_MESSAGE, 'SETUP');
+        throw appError('Serveren svarede ikke som forventet. Prøv igen om lidt.', 'SERVER');
+      }
+      if (!got.res.ok) throw appError('Serveren svarede ikke som forventet. Prøv igen om lidt.', 'SERVER');
+      if (json.ok) return json.data;
+      var err = appError(String(json.error || 'Noget gik galt. Prøv igen.'), String(json.code || 'SERVER'));
+      if (err.code === 'AUTH' && name !== 'pair') authLost(err.message);
+      throw err;
+    }, function (err) {
+      clearTimeout(timer);
+      if (err && err.code) throw err;
+      if (err && err.name === 'AbortError') throw appError('Serveren svarer ikke lige nu. Prøv igen om lidt.', 'NET');
+      throw appError('Ingen forbindelse. Tjek internettet og prøv igen.', 'NET');
+    });
+  }
+
+  /** Tilfældigt id til en ny tur (samme format som Utilities.getUuid i Apps Script). */
+  function newId() {
+    if (window.crypto && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+    var b = new Uint8Array(16);
+    crypto.getRandomValues(b);
+    b[6] = (b[6] & 15) | 64;
+    b[8] = (b[8] & 63) | 128;
+    var h = Array.prototype.map.call(b, function (x) { return (x < 16 ? '0' : '') + x.toString(16); }).join('');
+    return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
+  }
+
+  function parseKm(text) {
+    var t = String(text || '').trim().replace(/\s/g, '');
+    if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(t)) t = t.replace(/\./g, '');
+    t = t.replace(',', '.');
+    return /^\d+(\.\d+)?$/.test(t) ? Math.round(Number(t) * 10) / 10 : NaN;
+  }
+
+  function isoParts(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+    return m ? { y: +m[1], m: +m[2], d: +m[3] } : null;
+  }
+  function shiftIso(iso, days) {
+    var p = isoParts(iso);
+    var dt = new Date(Date.UTC(p.y, p.m - 1, p.d + days));
+    return dt.toISOString().slice(0, 10);
+  }
+  /** Dagens dato i dansk tid. Beregnes hver gang, så appen kan stå åben over midnat. */
+  function today() {
+    var t = todayFormat.format(new Date());
+    return isoParts(t) ? t : (state ? state.today : '');
+  }
+  function formatDate(iso) {
+    var p = isoParts(iso);
+    if (!p) return iso;
+    if (iso === today()) return 'I dag';
+    if (iso === shiftIso(today(), -1)) return 'I går';
+    return dateFormat.format(new Date(p.y, p.m - 1, p.d, 12));
+  }
+  function km(n) { return kmFormat.format(n); }
+  function kr(n) { return krFormat.format(n) + ' kr.'; }
+
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === 'text') node.textContent = attrs[k];
+      else if (k === 'class') node.className = attrs[k];
+      else node.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return node;
+  }
+
+  function shortAddress(a) {
+    // "Vestergade 1, 5700 Svendborg, Danmark" -> "Vestergade 1, 5700 Svendborg"
+    return String(a || '').replace(/,\s*(Danmark|Denmark)$/i, '');
+  }
+
+  // ---------- Formular ----------
+
+  function setType(type) {
+    tripType = type;
+    document.querySelectorAll('.seg button').forEach(function (b) {
+      b.setAttribute('aria-checked', b.getAttribute('data-type') === type ? 'true' : 'false');
+    });
+    els.typeHint.textContent = HINTS[type];
+    els.purposeReq.textContent = type === TYPE_BUSINESS ? '(skal udfyldes)' : '(valgfrit)';
+    els.purpose.placeholder = type === TYPE_BUSINESS ? 'fx Kundebesøg hos Jensen VVS' : 'fx Arbejde';
+    store('type', type);
+    // Afstikkere giver ikke kørselsfradrag, så delmål findes kun ved erhvervskørsel.
+    if (type === TYPE_COMMUTE && stopInputs().length) {
+      els.stops.innerHTML = '';
+      invalidateRoute();
+      scheduleRoute(0);
+    }
+    renumberStops();
+    if (route.status === 'ok' || route.status === 'error') renderResult(); // bro-valget afhænger af typen
+    if (type === TYPE_COMMUTE && state && !els.from.value.trim() && !els.to.value.trim() && !stopInputs().length) {
+      if (state.settings.home && state.settings.work) {
+        els.from.value = state.settings.home;
+        els.to.value = state.settings.work;
+        scheduleRoute(0);
+      }
+    }
+    // Erhvervsture starter typisk fra arbejdspladsen.
+    if (type === TYPE_BUSINESS && state && state.settings.work && !els.from.value.trim()) {
+      els.from.value = state.settings.work;
+    }
+    updateSaveState();
+  }
+
+  function stopInputs() {
+    return Array.prototype.slice.call(els.stops.querySelectorAll('input'));
+  }
+
+  function addStop(value) {
+    if (stopInputs().length >= 8) return;
+    var n = stopInputs().length + 1;
+    var id = 'stop' + Date.now() + n;
+    var input = el('input', { type: 'text', id: id, list: 'addressList', autocomplete: 'off', placeholder: 'Adresse for delmål' });
+    input.value = value || '';
+    var remove = el('button', { type: 'button', class: 'icon-btn', 'aria-label': 'Fjern delmål', title: 'Fjern delmål' });
+    remove.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+    var field = el('div', { class: 'field stop' }, [
+      el('label', { for: id, text: 'Delmål' }),
+      el('div', { class: 'stop-row' }, [input, remove])
+    ]);
+    remove.addEventListener('click', function () { field.remove(); renumberStops(); invalidateRoute(); scheduleRoute(0); });
+    bindRouteInput(input);
+    els.stops.appendChild(field);
+    renumberStops();
+    if (!value) input.focus();
+  }
+
+  function renumberStops() {
+    var fields = els.stops.querySelectorAll('.field');
+    fields.forEach(function (f, i) { f.querySelector('label').textContent = fields.length > 1 ? 'Delmål ' + (i + 1) : 'Delmål'; });
+    // visibility frem for hidden, så byt-om-knappen bliver stående til højre
+    $('addStop').style.visibility = fields.length >= 8 || tripType === TYPE_COMMUTE ? 'hidden' : '';
+  }
+
+  function routeRequest() {
+    return {
+      from: els.from.value.trim(),
+      to: els.to.value.trim(),
+      stops: stopInputs().map(function (i) { return i.value.trim(); }).filter(Boolean),
+      roundTrip: els.roundTrip.checked
+    };
+  }
+
+  function invalidateRoute() {
+    routeSeq++;
+    clearTimeout(routeTimer);
+    route = { status: 'idle' };
+    if (!bridgeTouched) bridge = '';
+    renderResult();
+    updateSaveState();
+  }
+
+  function scheduleRoute(delay, force) {
+    clearTimeout(routeTimer);
+    var req = routeRequest();
+    if (!req.from || !req.to) { renderResult(); return; }
+    routeTimer = setTimeout(function () { computeRoute(force); }, delay);
+  }
+
+  function computeRoute(force) {
+    var req = routeRequest();
+    if (!req.from || !req.to) return;
+    var key = JSON.stringify(req);
+    // Samme rute er allerede beregnet, i gang eller fejlet – så rør ikke ved den (og ved et evt. km-felt).
+    // Enter eller "Prøv igen" tvinger en ny beregning efter en fejl.
+    if (route.key === key && (route.status === 'ok' || route.status === 'loading' || (route.status === 'error' && !force))) return;
+    var seq = ++routeSeq;
+    route = { status: 'loading', key: key };
+    renderResult();
+    updateSaveState();
+    call('calculateRoute', req).then(function (res) {
+      if (seq !== routeSeq) return;
+      route = { status: 'ok', key: key, data: res, km: res.totalKm, edited: false };
+      if (!bridgeTouched) bridge = res.bridge || '';
+      renderResult();
+      updateSaveState();
+    }, function (err) {
+      if (seq !== routeSeq) return;
+      route = { status: 'error', key: key, message: err.message, km: NaN, edited: true };
+      renderResult();
+      updateSaveState();
+    });
+  }
+
+  function bindRouteInput(input) {
+    input.addEventListener('input', function () {
+      invalidateRoute();
+      // Beregn også, når man holder en pause i skrivningen (eller vælger et forslag) – men kun
+      // når begge adresser ligner færdige adresser (med tal, fx husnummer eller postnummer),
+      // så en halv adresse ikke giver en rute til et forkert sted.
+      var req = routeRequest();
+      if (/\d/.test(req.from) && /\d/.test(req.to)) scheduleRoute(1200);
+    });
+    input.addEventListener('change', function () { scheduleRoute(150); });
+    input.addEventListener('blur', function () { scheduleRoute(150); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); scheduleRoute(0, true); }
+    });
+  }
+
+  function renderResult() {
+    var box = els.result;
+    box.innerHTML = '';
+    var req = routeRequest();
+    if (route.status === 'idle') {
+      box.appendChild(el('div', { class: 'result-idle', text: req.from && req.to
+        ? 'Tryk Enter eller gå videre fra feltet for at beregne afstanden.'
+        : 'Skriv fra og til, så beregner Google Maps afstanden.' }));
+      return;
+    }
+    if (route.status === 'loading') {
+      box.appendChild(el('div', { class: 'result-loading' }, [el('span', { class: 'spinner', 'aria-hidden': 'true' }), 'Beregner ruten …']));
+      return;
+    }
+    var totalLabel = req.roundTrip ? 'Km i alt, ud og hjem:' : 'Antal km:';
+    if (route.status === 'error') {
+      var retry = el('button', { type: 'button', class: 'link-btn', text: 'Prøv igen' });
+      retry.addEventListener('click', function () { computeRoute(true); });
+      box.appendChild(el('div', { class: 'result-error' }, [route.message + ' ', retry]));
+      box.appendChild(kmEditor('Skriv selv – ' + totalLabel.charAt(0).toLowerCase() + totalLabel.slice(1)));
+      var picker = bridgePicker();
+      if (picker) box.appendChild(picker);
+      return;
+    }
+
+    var d = route.data;
+    var split = d.backKm !== null
+      ? 'Ud ' + km(d.outKm) + ' km · hjem ' + km(d.backKm) + ' km'
+      : 'Enkelttur';
+    var shownKm = route.edited && route.km > 0 ? route.km : d.totalKm;
+    box.appendChild(el('div', { class: 'km-line' }, [
+      el('div', { class: 'km-big', id: 'kmBig' }, [km(shownKm), el('small', { text: 'km' })]),
+      el('div', { class: 'km-split', text: route.edited && route.km !== d.totalKm ? 'Rettet af dig' : split })
+    ]));
+
+    var resolved = el('ul', { class: 'resolved' });
+    resolved.appendChild(el('li', {}, ['Fra ', el('b', { text: shortAddress(d.fromLabel) })]));
+    (d.stopLabels || []).forEach(function (s) { resolved.appendChild(el('li', {}, ['Via ', el('b', { text: shortAddress(s) })])); });
+    resolved.appendChild(el('li', {}, ['Til ', el('b', { text: shortAddress(d.toLabel) })]));
+    box.appendChild(resolved);
+
+    var actions = el('div', { class: 'result-actions' });
+    actions.appendChild(el('a', { href: d.mapsUrl, target: '_blank', rel: 'noopener', text: 'Se ruten i Google Maps ↗' }));
+    var editBtn = el('button', { type: 'button', class: 'link-btn', text: route.edited ? 'Brug Google Maps-afstanden' : 'Ret antal km' });
+    editBtn.addEventListener('click', function () {
+      if (route.edited) {
+        route.edited = false;
+        route.km = d.totalKm;
+        renderResult();
+      } else {
+        route.edited = true;
+        renderResult();
+        var input = $('kmInput');
+        if (input) { input.focus(); input.select(); }
+      }
+      updateSaveState();
+    });
+    actions.appendChild(editBtn);
+    box.appendChild(actions);
+
+    if (route.edited) {
+      var editor = kmEditor('Faktisk kørt – ' + totalLabel.charAt(0).toLowerCase() + totalLabel.slice(1));
+      editor.appendChild(el('span', { class: 'tag', text: 'Google Maps: ' + km(d.totalKm) + ' km' }));
+      box.appendChild(editor);
+    }
+    var bridgeRow = bridgePicker();
+    if (bridgeRow) box.appendChild(bridgeRow);
+  }
+
+  function kmEditor(labelText) {
+    var wrap = el('div', { class: 'km-edit' });
+    var input = el('input', { type: 'text', id: 'kmInput', inputmode: 'decimal', placeholder: '0,0' });
+    if (route.km > 0) input.value = km(route.km);
+    input.addEventListener('input', function () {
+      route.km = parseKm(input.value);
+      input.setAttribute('aria-invalid', input.value && !(route.km > 0) ? 'true' : 'false');
+      // Opdatér det store tal uden at tegne feltet om, så fokus og markør bliver stående.
+      var big = $('kmBig');
+      if (big && route.km > 0) big.firstChild.nodeValue = km(route.km);
+      updateSaveState();
+    });
+    wrap.appendChild(el('label', { for: 'kmInput', text: labelText }));
+    wrap.appendChild(input);
+    wrap.appendChild(el('span', { text: 'km' }));
+    return wrap;
+  }
+
+  /** Broen tæller kun, når turen indgår i kørselsfradraget. */
+  function bridgeCounts() {
+    return tripType === TYPE_COMMUTE || !state || state.settings.compensation === COMP_NONE;
+  }
+
+  function bridgePicker() {
+    var wrap = el('div', { class: 'bridge' });
+    var select = el('select', { id: 'bridgeSelect' });
+    Object.keys(BRIDGE_LABELS).forEach(function (value) {
+      var opt = el('option', { value: value, text: BRIDGE_LABELS[value] });
+      if (value === bridge) opt.selected = true;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', function () {
+      bridge = select.value;
+      bridgeTouched = true;
+    });
+    wrap.appendChild(el('label', { for: 'bridgeSelect', text: 'Betalingsbro på turen:' }));
+    wrap.appendChild(select);
+    if (bridge && !bridgeCounts()) {
+      wrap.appendChild(el('span', { text: state.settings.compensation === COMP_EMPLOYER
+        ? 'Noteres – indgår ikke i kørselsfradraget. Arbejdsgiveren kan dække broudgiften mod kvittering.'
+        : 'Noteres – indgår ikke i kørselsfradraget. Broudgiften fradrages i virksomheden efter kvittering.' }));
+    }
+    else if (bridge && !bridgeTouched) wrap.appendChild(el('span', { class: 'tag', text: 'Fundet i ruten' }));
+    return wrap;
+  }
+
+  function formProblem() {
+    if (!state) return 'Kørebogen indlæses …';
+    if (!isoParts(els.date.value)) return 'Vælg en dato.';
+    if (els.date.value > today()) return 'Datoen ligger i fremtiden.';
+    var req = routeRequest();
+    if (!req.from || !req.to) return 'Skriv fra og til.';
+    if (tripType === TYPE_BUSINESS && !els.purpose.value.trim()) return 'Skriv formålet med turen.';
+    if (route.status === 'idle') return 'Tryk Enter i adressefeltet for at beregne afstanden.';
+    if (route.status === 'loading') return 'Beregner afstanden …';
+    if (!(route.km > 0)) return 'Skriv antal km.';
+    if (route.km > 5000) return 'Antal km ser forkert ud.';
+    return null;
+  }
+
+  function updateSaveState() {
+    var problem = formProblem();
+    els.saveBtn.disabled = saving || !!problem;
+    var ready = els.date.value !== today()
+      ? 'Turen gemmes med datoen ' + formatDate(els.date.value).toLowerCase() + '.'
+      : (touchOnly ? '' : 'Ctrl + Enter gemmer også turen.');
+    $('saveHint').textContent = saving ? '' : (problem || ready);
+    els.date.max = today();
+    els.date.setAttribute('aria-invalid', els.date.value > today() ? 'true' : 'false');
+  }
+
+  /**
+   * Holder datoen på i dag. En dato, brugeren selv har valgt (fx "I går"), bliver
+   * stående resten af dagen, så man kan registrere flere ture bagud – men ikke til næste dag.
+   */
+  function refreshDate() {
+    if (dateTouchedOn !== today()) {
+      dateTouchedOn = null;
+      els.date.value = today();
+    }
+    updateSaveState();
+  }
+
+  function touchDate() {
+    dateTouchedOn = els.date.value && els.date.value !== today() ? today() : null;
+  }
+
+  function showFormError(msg) {
+    els.formError.textContent = msg || '';
+    els.formError.hidden = !msg;
+  }
+
+  function save() {
+    if (formProblem() || saving) return;
+    var req = routeRequest();
+    var mapsKm = route.status === 'ok' ? route.data.totalKm : null;
+    var trip = {
+      date: els.date.value,
+      type: tripType,
+      from: req.from,
+      stops: req.stops,
+      to: req.to,
+      roundTrip: req.roundTrip,
+      purpose: els.purpose.value.trim(),
+      note: els.note.value.trim(),
+      bridge: bridge, // gemmes altid; Oversigten afgør ud fra indstillingen, om den tæller
+      km: route.km,
+      mapsKm: mapsKm
+    };
+    // Samme tur sendt igen (fx efter "Ingen forbindelse", hvor serveren måske nåede at gemme den)
+    // får samme id, så den ikke bliver gemt to gange. Rettes noget i formularen, får den et nyt id.
+    // Forsøget huskes på enheden i 12 timer, så det også virker, hvis appen lukkes imellem.
+    var signature = JSON.stringify(trip);
+    if (!lastAttempt) {
+      try { lastAttempt = JSON.parse(recall('pending') || 'null'); } catch (e) { lastAttempt = null; }
+      if (!lastAttempt || typeof lastAttempt.id !== 'string' || !(Date.now() - lastAttempt.at < 12 * 3600000)) lastAttempt = null;
+    }
+    if (!lastAttempt || lastAttempt.signature !== signature) {
+      lastAttempt = { signature: signature, id: newId(), at: Date.now() };
+      store('pending', JSON.stringify(lastAttempt));
+    }
+    trip.clientId = lastAttempt.id;
+    saving = true;
+    showFormError('');
+    els.saveBtn.textContent = 'Gemmer …';
+    updateSaveState();
+    call('saveTrip', trip).then(function (res) {
+      lastAttempt = null;
+      forget('pending');
+      applyState(res);
+      resetForm();
+      showToast((res.alreadySaved ? 'Turen var allerede gemt' : 'Turen er gemt') + ' · ' + km(trip.km) + ' km', res.savedId, trip);
+    }, function (err) {
+      showFormError(err.message);
+    }).then(function () {
+      saving = false;
+      els.saveBtn.textContent = 'Gem tur';
+      updateSaveState();
+    });
+  }
+
+  function resetForm() {
+    els.from.value = '';
+    els.to.value = '';
+    els.stops.innerHTML = '';
+    renumberStops();
+    els.purpose.value = '';
+    els.note.value = '';
+    els.noteBox.open = false;
+    bridge = '';
+    bridgeTouched = false;
+    invalidateRoute();
+    refreshDate();
+  }
+
+  /** Udfylder formularen med en tidligere tur. keepDate bruges ved "Fortryd". */
+  function fillForm(t, keepDate) {
+    resetForm();
+    setType(t.type);
+    els.from.value = t.from;
+    els.to.value = t.to;
+    if (t.type === TYPE_BUSINESS) (t.stops || []).forEach(function (s) { addStop(s); });
+    els.roundTrip.checked = t.kind === 'Retur' || t.roundTrip === true;
+    els.purpose.value = t.purpose || '';
+    els.note.value = keepDate ? (t.note || '') : '';
+    els.noteBox.open = !!els.note.value;
+    if (t.bridge) { bridge = t.bridge; bridgeTouched = true; }
+    els.date.value = keepDate ? t.date : today();
+    touchDate();
+    updateSaveState();
+    scheduleRoute(0);
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ---------- Visning af data ----------
+
+  function applyState(s) {
+    state = s;
+    // En tur, der manglede svar på, står nu i listen: den blev gemt. Forsøget glemmes på enheden,
+    // så en bevidst ens tur efter en genstart bliver en ny tur. I denne session huskes det dog
+    // (lastAttempt), så et nyt tryk på Gem med den samme formular giver "Turen var allerede gemt".
+    // Kun de 12 nyeste ture er med i listen; et forsøg med en ældre dato afstemmes derfor ikke her,
+    // men gemmes stadig ikke to gange (serveren kender id'et i 12 timer).
+    if (!saving) {
+      var stored = null;
+      try { stored = JSON.parse(recall('pending') || 'null'); } catch (e) { stored = null; }
+      var pending = lastAttempt || stored;
+      if (pending && pending.id && !pending.seen && (s.recent || []).some(function (t) { return t.id === pending.id; })) {
+        forget('pending');
+        pending.seen = true; // beskeden vises kun én gang
+        if (lastAttempt) showFormError('Turen er allerede kommet ind i kørebogen, selv om svaret manglede. Du skal ikke gemme den igen.');
+        else if (stored) setTimeout(function () { showToast('Turen, der manglede svar på, er gemt i kørebogen. Du skal ikke gemme den igen.'); }, 0);
+      }
+    }
+    $('loadError').hidden = true;
+    $('setupBanner').hidden = !!(s.settings.home && s.settings.work);
+    var problemBanner = $('problemBanner');
+    problemBanner.textContent = s.problems === 1
+      ? '1 række i regnearket kan ikke læses og tælles ikke med. Se fanen Oversigt.'
+      : s.problems + ' rækker i regnearket kan ikke læses og tælles ikke med. Se fanen Oversigt.';
+    problemBanner.hidden = !s.problems;
+    var link = $('sheetLink');
+    link.href = s.spreadsheetUrl;
+    link.hidden = false;
+    refreshDate();
+
+    var c = s.current;
+    $('statYear').textContent = c.year;
+    $('statKm').textContent = km(c.km);
+    $('statMonthLabel').textContent = c.monthName;
+    $('statMonthKm').textContent = km(c.monthKm);
+    $('statTrips').textContent = c.trips;
+    $('statCommute').textContent = kr(c.deductionAmount);
+    var comp = s.settings.compensation;
+    $('statBusinessLabel').textContent = comp === COMP_NONE ? 'Erhverv (i fradraget)'
+      : comp === COMP_EMPLOYER ? 'Godtgørelse, maks.' : 'Erhverv efter satser';
+    $('statBusiness').textContent = comp === COMP_NONE ? km(c.businessKm) + ' km' : kr(c.businessAmount);
+    $('statFine').textContent = c.ratesExact
+      ? 'Beløbene er vejledende og beregnet efter Skattestyrelsens satser for ' + c.year + '.'
+      : 'Satserne for ' + c.year + ' mangler i fanen Satser, så beløbene er regnet med sidste års satser.';
+
+    els.yearList.innerHTML = '';
+    s.years.forEach(function (y) {
+      els.yearList.appendChild(el('li', {}, [
+        el('span', { text: String(y.year) + ' · ' + y.trips + (y.trips === 1 ? ' tur' : ' ture') }),
+        el('span', { text: km(y.km) + ' km' })
+      ]));
+    });
+    els.yearList.hidden = !s.years.length;
+
+    renderRecent();
+    fillDatalist('addressList', s.addresses.concat([s.settings.home, s.settings.work]));
+    fillDatalist('purposeList', s.purposes);
+    renderChips();
+    updateSaveState();
+  }
+
+  function fillDatalist(id, values) {
+    var list = $(id);
+    list.innerHTML = '';
+    var seen = {};
+    values.forEach(function (v) {
+      if (!v || seen[v.toLowerCase()]) return;
+      seen[v.toLowerCase()] = true;
+      list.appendChild(el('option', { value: v }));
+    });
+  }
+
+  function renderChips() {
+    var places = [];
+    if (state.settings.home) places.push({ label: 'Hjem', value: state.settings.home });
+    if (state.settings.work) places.push({ label: 'Arbejde', value: state.settings.work });
+    document.querySelectorAll('[data-chips-for]').forEach(function (box) {
+      var target = $(box.getAttribute('data-chips-for'));
+      box.innerHTML = '';
+      places.forEach(function (p) {
+        var chip = el('button', { type: 'button', class: 'chip', title: p.value, text: p.label });
+        chip.addEventListener('click', function () {
+          target.value = p.value;
+          invalidateRoute();
+          scheduleRoute(0);
+        });
+        box.appendChild(chip);
+      });
+    });
+  }
+
+  function renderRecent() {
+    var list = els.recentList;
+    list.innerHTML = '';
+    if (!state.recent.length) {
+      list.appendChild(el('li', { class: 'empty', text: 'Ingen ture endnu. Din første tur dukker op her.' }));
+      return;
+    }
+    state.recent.forEach(function (t) {
+      var places = [t.from].concat(t.stops || [], [t.to]).map(function (a) { return a.split(',')[0]; });
+      var routeText = places.join(' → ') + (t.kind === 'Retur' ? ' (retur)' : '') + (t.bridge ? ' · ' + t.bridge : '');
+      var label = routeText + ', ' + formatDate(t.date);
+      var badge = el('span', { class: 'badge' + (t.type === TYPE_BUSINESS ? ' business' : ''), text: t.type === TYPE_BUSINESS ? 'Erhverv' : 'Hjem–arb.' });
+      var meta = el('div', { class: 'trip-meta' }, [badge, formatDate(t.date) + (t.purpose ? ' · ' + t.purpose : '')]);
+
+      var actions = el('div', { class: 'trip-actions' });
+      var again = el('button', { type: 'button', text: 'Gentag', title: 'Udfyld formularen med denne tur', 'aria-label': 'Gentag turen ' + label });
+      again.addEventListener('click', function () { fillForm(t, false); });
+      actions.appendChild(again);
+      if (t.id) {
+        var del = el('button', { type: 'button', text: 'Slet', title: 'Slet turen fra regnearket', 'aria-label': 'Slet turen ' + label });
+        var armed = null;
+        del.addEventListener('click', function () {
+          if (!armed) {
+            del.textContent = 'Bekræft sletning';
+            del.className = 'confirm';
+            armed = setTimeout(function () { armed = null; del.textContent = 'Slet'; del.className = ''; }, 4000);
+            return;
+          }
+          clearTimeout(armed);
+          del.disabled = true;
+          del.textContent = 'Sletter …';
+          deleteSafely(t.id).then(function (res) {
+            if (res) applyState(res);
+            else { var li = del.closest('li'); if (li) li.remove(); } // slettet, men listen kunne ikke hentes
+            showToast('Turen er slettet');
+          }, function (err) {
+            showToast(err.message);
+            del.disabled = false;
+            armed = null;
+            del.textContent = 'Slet';
+            del.className = '';
+          });
+        });
+        actions.appendChild(del);
+      }
+
+      list.appendChild(el('li', { class: 'trip' }, [
+        el('div', { class: 'trip-route', title: [t.from].concat(t.stops || [], [t.to]).join(' → '), text: routeText }),
+        el('div', { class: 'trip-km', text: km(t.km) + ' km' }),
+        meta,
+        actions
+      ]));
+    });
+  }
+
+  /**
+   * Sletter en tur og svarer med den nye tilstand. Går svaret tabt (ingen forbindelse eller
+   * timeout), ved appen ikke, om serveren nåede at slette. Så spørges der igen: "findes ikke"
+   * betyder, at den allerede er slettet. Kan det stadig ikke afgøres, hentes listen forfra, så
+   * den viser det, der faktisk står i regnearket, og fejlen vises.
+   */
+  function deleteSafely(id) {
+    // Turen er væk: hent listen. Fejler det, er turen stadig slettet; så svares der med null.
+    function gone() { return call('getState').catch(function () { return null; }); }
+    // Uvist om serveren nåede at slette (også ved en serverfejl midt i): hent listen i baggrunden.
+    function refresh(e) { if (e.code !== 'AUTH') call('getState').then(applyState, function () { /* listen opdateres næste gang */ }); }
+    return call('deleteTrip', id).catch(function (err) {
+      if (err.code === 'NOTFOUND') return gone(); // allerede slettet (fx i regnearket)
+      if (err.code !== 'NET') { refresh(err); throw err; }
+      return call('deleteTrip', id).catch(function (err2) {
+        if (err2.code === 'NOTFOUND') return gone();
+        refresh(err2);
+        throw err2;
+      });
+    });
+  }
+
+  var toastTimer = null;
+  function showToast(text, undoId, savedTrip) {
+    els.toastText.textContent = text;
+    els.toastAction.hidden = !undoId;
+    els.toastAction.onclick = undoId ? function () {
+      els.toastAction.hidden = true;
+      els.toastText.textContent = 'Fortryder …';
+      deleteSafely(undoId).then(function (res) {
+        if (res) applyState(res);
+        if (savedTrip) fillForm(savedTrip, true);
+        showToast('Turen er fjernet igen. Du kan rette den og gemme igen.');
+      }, function (err) {
+        showToast(err.message + (err.code === 'AUTH' ? '' : ' Se under Seneste ture, om turen er fjernet.'));
+      });
+    } : null;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { els.toast.classList.remove('show'); }, undoId ? 7000 : 3500);
+  }
+
+  // ---------- Indstillinger ----------
+
+  function openSettings() {
+    if (!state) return;
+    $('setName').value = state.settings.name;
+    $('setHome').value = state.settings.home;
+    $('setWork').value = state.settings.work;
+    $('setPlate').value = state.settings.plate;
+    $('setRemote').checked = !!state.settings.remote;
+    document.querySelectorAll('input[name="compensation"]').forEach(function (r) {
+      r.checked = r.value === state.settings.compensation;
+    });
+    $('settingsError').hidden = true;
+    if (typeof els.dialog.showModal === 'function') els.dialog.showModal();
+    else els.dialog.setAttribute('open', '');
+    $('setName').focus();
+  }
+
+  function closeSettings() {
+    if (typeof els.dialog.close === 'function') els.dialog.close();
+    else els.dialog.removeAttribute('open');
+  }
+
+  $('settingsForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = $('settingsSave');
+    btn.disabled = true;
+    btn.textContent = 'Gemmer …';
+    call('saveSettings', {
+      name: $('setName').value, home: $('setHome').value, work: $('setWork').value,
+      plate: $('setPlate').value, remote: $('setRemote').checked,
+      compensation: (document.querySelector('input[name="compensation"]:checked') || { value: COMP_NONE }).value
+    }).then(function (res) {
+      applyState(res);
+      closeSettings();
+      if (route.status === 'ok' || route.status === 'error') renderResult(); // bro-valget afhænger af indstillingen
+      showToast('Indstillingerne er gemt');
+    }, function (err) {
+      $('settingsError').textContent = err.message;
+      $('settingsError').hidden = false;
+    }).then(function () {
+      btn.disabled = false;
+      btn.textContent = 'Gem';
+    });
+  });
+  $('settingsCancel').addEventListener('click', closeSettings);
+  $('settingsBtn').addEventListener('click', openSettings);
+  document.querySelectorAll('[data-open-settings]').forEach(function (b) { b.addEventListener('click', openSettings); });
+
+  // ---------- Opstart ----------
+
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.addEventListener('click', function () { setType(b.getAttribute('data-type')); });
+    b.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        var next = tripType === TYPE_COMMUTE ? TYPE_BUSINESS : TYPE_COMMUTE;
+        setType(next);
+        document.querySelector('.seg button[data-type="' + next + '"]').focus();
+      }
+    });
+  });
+  document.querySelectorAll('[data-day-offset]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      els.date.value = shiftIso(today(), Number(b.getAttribute('data-day-offset')));
+      touchDate();
+      updateSaveState();
+    });
+  });
+  els.date.addEventListener('change', touchDate);
+  // Appen kan stå åben i dagevis: hold datoen ajour, når vinduet bliver aktivt igen.
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) refreshDate(); });
+  window.addEventListener('focus', refreshDate);
+  setInterval(refreshDate, 60000);
+  [els.from, els.to].forEach(bindRouteInput);
+  els.roundTrip.addEventListener('change', function () {
+    store('roundTrip', els.roundTrip.checked ? '1' : '0');
+    invalidateRoute();
+    scheduleRoute(0);
+  });
+  $('addStop').addEventListener('click', function () { addStop(''); invalidateRoute(); });
+  $('swapBtn').addEventListener('click', function () {
+    var a = els.from.value;
+    els.from.value = els.to.value;
+    els.to.value = a;
+    var stops = stopInputs().map(function (i) { return i.value; }).reverse();
+    stopInputs().forEach(function (input, i) { input.value = stops[i]; });
+    invalidateRoute();
+    scheduleRoute(0);
+  });
+  els.date.addEventListener('input', updateSaveState);
+  els.purpose.addEventListener('input', updateSaveState);
+  els.saveBtn.addEventListener('click', save);
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') save();
+  });
+
+  els.roundTrip.checked = recall('roundTrip') === '1';
+  // Erhverv er standard; Hjem–arbejde huskes, hvis det var det sidst valgte.
+  setType(recall('type') === TYPE_COMMUTE ? TYPE_COMMUTE : TYPE_BUSINESS);
+  renderResult();
+
+  // ---------- Adgang: kodeskærm, enhed og log ud ----------
+
+  var pairView = $('pairView');
+  var appView = $('appView');
+  var deviceDialog = $('deviceDialog');
+  var loadSeq = 0;
+
+  function showPair(message) {
+    appView.hidden = true;
+    pairView.hidden = false;
+    ['settingsBtn', 'deviceBtn', 'sheetLink'].forEach(function (id) { $(id).hidden = true; });
+    var err = $('pairError');
+    err.textContent = message || '';
+    err.hidden = !message;
+    $('pairBtn').disabled = false;
+    $('pairBtn').textContent = 'Fortsæt';
+    if (!$('pairName').value) $('pairName').value = guessDeviceName();
+    setTimeout(function () { try { $('pairCode').focus(); } catch (e) { /* intet felt */ } }, 0);
+  }
+
+  function showApp() {
+    pairView.hidden = true;
+    appView.hidden = false;
+    $('settingsBtn').hidden = false;
+    $('deviceBtn').hidden = false;
+  }
+
+  /** Serveren kender ikke nøglen længere (spærret eller logget ud): tilbage til kodeskærmen. */
+  function authLost(message) {
+    deviceKey = '';
+    forget('key');
+    state = null;
+    closeDialog(els.dialog);
+    closeDialog(deviceDialog);
+    showPair(message || 'Denne enhed er ikke godkendt længere. Indtast en ny kode.');
+  }
+
+  function guessDeviceName() {
+    var ua = navigator.userAgent || '';
+    if (/iPhone/.test(ua)) return 'iPhone';
+    if (/iPad/.test(ua)) return 'iPad';
+    if (/Android/.test(ua)) return 'Android';
+    if (/Windows/.test(ua)) return 'PC';
+    if (/Macintosh/.test(ua)) return 'Mac';
+    return '';
+  }
+
+  function load() {
+    var seq = ++loadSeq;
+    showApp();
+    call('getState').then(function (s) {
+      if (seq !== loadSeq) return;
+      applyState(s);
+      setType(tripType); // udfyld adresser fra indstillingerne, hvis de er sat op
+    }, function (err) {
+      if (seq !== loadSeq || err.code === 'AUTH') return;
+      var box = $('loadError');
+      box.textContent = 'Kørebogen kunne ikke indlæses: ' + err.message;
+      box.hidden = false;
+      els.recentList.innerHTML = '';
+      var retry = el('button', { class: 'chip', type: 'button', text: 'Prøv igen' });
+      retry.addEventListener('click', function () { box.hidden = true; load(); });
+      box.appendChild(document.createTextNode(' '));
+      box.appendChild(retry);
+    });
+  }
+
+  $('pairCode').addEventListener('input', function () {
+    // Kun cifre, vist som "1234 5678".
+    var digits = this.value.replace(/\D/g, '').slice(0, 8);
+    var shown = digits.length > 4 ? digits.slice(0, 4) + ' ' + digits.slice(4) : digits;
+    if (this.value !== shown) this.value = shown;
+    $('pairError').hidden = true;
+  });
+
+  $('pairForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var code = $('pairCode').value.replace(/\D/g, '');
+    var err = $('pairError');
+    if (code.length !== 8) {
+      err.textContent = 'Skriv de 8 cifre fra koden.';
+      err.hidden = false;
+      $('pairCode').focus();
+      return;
+    }
+    var btn = $('pairBtn');
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = 'Tjekker koden …';
+    err.hidden = true;
+    call('pair', { code: code, deviceName: $('pairName').value.trim() }).then(function (res) {
+      deviceKey = res.key;
+      store('key', res.key);
+      $('pairCode').value = '';
+      load();
+      showToast('Velkommen, ' + res.person + '. Denne enhed er nu godkendt.');
+    }, function (e2) {
+      btn.disabled = false;
+      btn.textContent = 'Fortsæt';
+      err.textContent = e2.message;
+      err.hidden = false;
+      $('pairCode').focus();
+    });
+  });
+
+  function closeDialog(d) {
+    if (!d) return;
+    if (typeof d.close === 'function') { if (d.open) d.close(); } else d.removeAttribute('open');
+  }
+
+  $('deviceBtn').addEventListener('click', function () {
+    var dev = state && state.device;
+    $('deviceName').textContent = dev ? dev.name : 'Denne enhed';
+    $('devicePerson').textContent = dev ? 'Bruges af ' + dev.person : '';
+    $('codeOut').hidden = true;
+    $('deviceError').hidden = true;
+    $('newCodeBtn').disabled = false;
+    $('newCodeBtn').textContent = 'Tilføj enhed';
+    $('logoutBtn').disabled = false;
+    $('logoutBtn').textContent = 'Log ud på denne enhed';
+    if (typeof deviceDialog.showModal === 'function') deviceDialog.showModal();
+    else deviceDialog.setAttribute('open', '');
+  });
+
+  $('newCodeBtn').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Laver kode …';
+    $('deviceError').hidden = true;
+    call('createPairingCode').then(function (r) {
+      $('codeValue').textContent = r.display;
+      $('codeExpires').textContent = 'Til ' + r.person + ' · gælder i ' + r.minutes + ' minutter (til kl. ' + r.expiresText + ')';
+      $('codeOut').hidden = false;
+      btn.disabled = false;
+      btn.textContent = 'Lav en ny kode';
+    }, function (e) {
+      btn.disabled = false;
+      btn.textContent = 'Tilføj enhed';
+      $('deviceError').textContent = e.message;
+      $('deviceError').hidden = false;
+    });
+  });
+
+  var logoutArmed = null;
+  $('logoutBtn').addEventListener('click', function () {
+    var btn = this;
+    if (!logoutArmed) {
+      btn.textContent = 'Tryk igen for at logge ud';
+      logoutArmed = setTimeout(function () { logoutArmed = null; btn.textContent = 'Log ud på denne enhed'; }, 4000);
+      return;
+    }
+    clearTimeout(logoutArmed);
+    logoutArmed = null;
+    btn.disabled = true;
+    btn.textContent = 'Logger ud …';
+    call('logoutDevice').then(function () {
+      authLost('Du er logget ud på denne enhed. Indtast en ny kode for at bruge Kørebogen igen.');
+    }, function (e) {
+      btn.disabled = false;
+      btn.textContent = 'Log ud på denne enhed';
+      $('deviceError').textContent = e.message;
+      $('deviceError').hidden = false;
+    });
+  });
+
+  if (deviceKey) load(); else showPair('');
+
+  if ('serviceWorker' in navigator && !window.KOREBOG_NO_SW && location.protocol === 'https:') {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () { /* appen virker også uden */ }); });
+  }
+})();
+</script>
+</body>
+</html>
