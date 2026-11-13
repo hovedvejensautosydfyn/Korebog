@@ -8,8 +8,8 @@
  * Hæv CACHE-nummeret, når ikoner eller manifestet ændres.
  */
 var PREFIX = 'korebog-app-';
-var CACHE = PREFIX + 'v1';
-var SHELL = ['index.html', 'config.js', 'manifest.webmanifest', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'];
+var CACHE = PREFIX + 'v2';
+var SHELL = ['index.html', 'config.js', 'manifest.webmanifest', 'icons/ikon2-180.png', 'icons/ikon2-192.png', 'icons/ikon2-512.png', 'icons/ikon2-maskable-512.png'];
 var NETWORK_WAIT_MS = 4000; // på dårligt net vises den gemte udgave, hvis nettet er for langsomt
 
 self.addEventListener('install', function (event) {
